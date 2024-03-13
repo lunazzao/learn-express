@@ -29,6 +29,7 @@ app.use(
   cors({origin: 'http://localhost:3000'})
 );
 app.use('/read/usernames', addMsgToRequest);
+app.use('/read/username/:name', addMsgToRequest);
 
 app.get('/read/usernames', (req, res) => {
   let usernames = req.users.map(function(user) {
@@ -36,6 +37,22 @@ app.get('/read/usernames', (req, res) => {
   });
   res.send(usernames);
 });
+
+app.get('/read/username/:name',(reg, res) => {
+  let name = reg.params.name;
+  let users_with_name = reg.users.filter(function(user){
+  return user.username == name;
+  }); 
+  console.log(users_with_name);
+  if(users_with_name.length ==0){
+  res.send({
+  error:{message:`${name} not found`, status: 404}
+  });
+  }
+  else {
+    res.send(users_with_name);
+    }
+ });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
